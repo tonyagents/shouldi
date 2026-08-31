@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-// shouldi — pre-trade reasoning gate over LIVE MoonAgents state.
+// shouldi — pre-trade reasoning gate over LIVE NovaAgents state.
 // Pulls real balances via `mp` every run. No proceedToken, no swap.
+// NOTE: `mp` here shells out to a real financial CLI (a live wallet/trading
+// tool). A public fork would need to swap `mp` for its own balance/trading CLI.
 //
 // Usage:
 //   shouldi buy <usd> <SYMBOL>            e.g.  shouldi buy 20 TripleT
@@ -114,7 +116,7 @@ const real = reasons.filter(r=>r.lvl!=="proceed");
 const verdict = real.length ? Object.keys(sev).find(k=>sev[k]===Math.max(...real.map(r=>sev[r.lvl]))) : "proceed";
 
 // ---- proceedToken: HMAC bound to exact intent ----
-const SECRET = process.env.SHOULDI_KEY || "moonagents-decision-key";
+const SECRET = process.env.SHOULDI_KEY || "novaagents-decision-key";
 const key = `${WALLET}:${CHAIN}:${intent.from}->${intent.to}:${usd}`;
 const token = verdict==="proceed" ? "dec_"+crypto.createHmac("sha256",SECRET).update(key).digest("hex").slice(0,16) : null;
 
